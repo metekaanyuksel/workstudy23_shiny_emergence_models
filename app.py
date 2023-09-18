@@ -513,10 +513,10 @@ def server(input, output, session):
               axs.flat[idx].plot(v, alpha = al)
             axs.flat[idx].set_title(f'$\mu$={outer_key[0]}, $R_0$={outer_key[1]}')
           elif inner_key == 'T_to_E':
-            axs.flat[(len(mu_list)*len(wild_r0_list))+(idx)].hist(values)
+            axs.flat[(len(mu_list)*len(wild_r0_list))+(idx)].hist(values, bins = 20)
             axs.flat[(len(mu_list)*len(wild_r0_list))+(idx)].set_title(f'$\mu$={outer_key[0]}, $R_0$={outer_key[1]}')
           elif inner_key == 'Extinct':
-            axs.flat[(len(mu_list)*len(wild_r0_list))*2+(idx)].hist(values)
+            axs.flat[(len(mu_list)*len(wild_r0_list))*2+(idx)].hist(values, bins = 20)
             axs.flat[(len(mu_list)*len(wild_r0_list))*2+(idx)].set_title(f'$\mu$={outer_key[0]}, $R_0$={outer_key[1]}')
       # fig.tight_layout()
       grid = plt.GridSpec(rows, cols)
