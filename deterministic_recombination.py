@@ -88,8 +88,8 @@ def create_meshgrid(p1,p1_name, p2, p2_name):
     '''
     input from slider range - p1 and p2 are tuple (min,max)
     '''
-    p1_values = np.linspace(p1[0],p1[1],20)
-    p2_values = np.linspace(p2[0],p2[1],20)
+    p1_values = np.linspace(p1[0],p1[1],50)
+    p2_values = np.linspace(p2[0],p2[1],50)
     p1, p2 = np.meshgrid(p1_values, p2_values)
     p1 = p1.reshape(-1,1)
     p2 = p2.reshape(-1,1)
