@@ -135,7 +135,7 @@ app_ui = ui.page_fluid(
             ui.column(3, ui.input_numeric("n_f", "Initial Population Size", value=100)),
             ui.column(3, ui.input_numeric("n_eq_f", "Equilibrium Population Size", value=250)),
             # ui.column(3, ui.input_numeric("i_0_f", "Initial Infected Individuals",value=1)),
-            ui.column(3, ui.input_numeric("t_max_f", "Maximum Time (in days)", value=10)),
+            ui.column(3, ui.input_numeric("t_max_f", "Maximum Time (in days)", value=1825)),
             ),
             ui.markdown("""Select the parameters for plotting"""),
             ui.input_selectize("x1_f", "Parameter 1", ['c1','c2','log(mu1)','log(mu2)','log(nu1)', 'log(nu2)','sigma','turnover','Gamma','Delta'], selected = 'c1'),
