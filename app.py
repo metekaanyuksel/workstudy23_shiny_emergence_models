@@ -9,35 +9,95 @@ from matplotlib.gridspec import SubplotSpec
 
 
 app_ui = ui.page_fluid(
-    ui.panel_title("Models of evolutionary emergence"),
+    ui.panel_title("Two models of evolutionary emergence: recombination and rescue"),
     ui.p(
                 """
-                This web application allows users to play with parameters of two models of evolutionary emergence.
-                The first addresses how mutation at two loci, selection, and recombination between genotypes
-                (00, 01, 10, and 11) shape the evolutionary dynamics of a pathogen on route to emergence, and how
-                the number of infected individuals (incidence) aqnd 
-                genotype frequencies depend on the life history of the resevoir host. The second model
-                is due to Antia et al. (2003), in which branching processes are used to study how the probability that
-                a pathogen adapts to a novel host depends on its initial degree of maladaptation, fitness landscape,
-                mutation rate, and initial size of introduction. These models differ in key ways: the first addresses
-                processes that are unfolding within the resevoir, and the second processes that are unfolding
-                after the pathogen has sucessfully spilled over into a novel host (e.g., humans). In the first tab,
-                users can play with parameters to solve the underlying system of equations to steady-state, or to plot
-                variables over time. In the second tab, users can input parameters to visualize how the probability
-                of emergence from a single introduction of a maladapted strain depends on those parameters,
-                and do full simulations of the branching process from any introduction size."""
+                
+                This web application allows users to play with two models 
+                of evolutionary emergence. The first model addresses how the 
+                life history of a reservoir host affects the likelihood a 
+                pathogen emerges on a novel host. The model tracks the 
+                density of susceptible, infected, and recovered hosts, 
+                and the frequency of pathogen genotypes circulating 
+                among the infected individuals. The model describes 
+                how mutation at two biallelic loci, selection, and 
+                recombination between the genotypes (00, 01, 10, and 11) 
+                shape the evolutionary dynamics of the pathogen 
+                and the likelihood it emerges on a novel host. 
+                The second model was developed by Antia et al. (2003); 
+                the authors use branching processes to study how 
+                the probability that a pathogen adapts to a novel host 
+                depends on its initial degree of maladaptation, 
+                fitness landscape, mutation rate, and size of introduction. 
+                These models differ in key ways: the first addresses 
+                processes that are unfolding within the reservoir, 
+                and the second processes that are unfolding after the 
+                pathogen has successfully spilled over into a novel host (e.g., humans). 
+                In the first tab, users can play with parameters to solve the 
+                model of recombination and host life history to steady-state, or to 
+                plot variables over time. 
+                In the second tab, users can input parameters 
+                to visualize how in the model of Antia et al.
+                the probability of emergence from a single 
+                introduction depends on those parameters, 
+                and do full simulations of the branching 
+                process from any introduction size.
+                
+                """
             ),
     ui.navset_tab_card(
 
-    ui.nav('Spillcombinavoir!',
+    ui.nav('Recombination in the resevoir',
       ui.p(
                 """
+                
+                This model tracks the density of hosts that are susceptible to, 
+                infected with, and recovered from
+                each of the pathogen genotypes (00, 10, 01, 11);
+                S denotes the density of susceptibles, I_ij the density
+                of individuals infected with genotype ij, and R the density
+                of hosts that have recovered from infection. 
+                The frequency of infections that are with strain ij is denoted x_ij.
+                Finally, p_i tracks the frequency of infections such
+                that the genotype carries a 1 at the ith locus and D
+                tracks the frequency of 11 infections that are found
+                in excess of the expected frequency p1 p2.
+                The 11 genotype is emergent-capable while the others are not;
+                the measure of emergence risk in this model is
+                the number of 11 infections at a given time, I11.
+                We assume that carrying a 1 at a given locus results in a 
+                reduction in the fitness of
+                that genotype. The life history characteristics considered are
+                mean lifetime at equilibrium (inverse of turnover) and
+                the turnover-scaled rates of recovery and waning immunity
+                (Gamma and Delta, respectively).  Forward and backward
+                mutations at the ith locus occur at rates 
+                mu_i and nu_i, respectively,
+                and result in conversion of the host to the mutant type.
+                Recombination occurs at a rate proportional to the
+                total number of infections (sigma I_T), and also results
+                in conversion of a co-infected host to the recombinant type. 
+                The costs of carrying 1s
+                at the loci under consideration are denoted c1 and c2.
+                Default parameters are chosen so that the recombination
+                rate is zero, selection is strong, and mutation is weak.
+                Other regimes can be considered by changing one or more
+                parameters (e.g., sigma and turnover).
+                
                 """
             ),
       ui.navset_tab_card(
         ui.nav("Steady-state solutions",
         ui.p(
                 """
+                
+                Equilibrium values for user-selected 
+                dependent variables (e.g., I11) are plotted as functions
+                two parameters (e.g., sigma and turnover) over 
+                user-specified ranges. The
+                plots take the form of heatmaps, with the color corresponding
+                to the value of the dependent variable at equilibrium.
+
                 """
             ),
         ui.layout_sidebar(
@@ -64,6 +124,9 @@ app_ui = ui.page_fluid(
         ui.nav("Solutions through time",
         ui.p(
                 """
+                Plots of dependent variables over time are outputted,
+                with different lines/colors corresponding to the trajectories
+                for different user-inputted parameter values.
                 """
             ),
         ui.layout_sidebar(
@@ -72,7 +135,7 @@ app_ui = ui.page_fluid(
             ui.column(3, ui.input_numeric("n_f", "Initial Population Size", value=100)),
             ui.column(3, ui.input_numeric("n_eq_f", "Equilibrium Population Size", value=250)),
             # ui.column(3, ui.input_numeric("i_0_f", "Initial Infected Individuals",value=1)),
-            ui.column(3, ui.input_numeric("t_max_f", "Maximum Time (in days)", value=10)),
+            ui.column(3, ui.input_numeric("t_max_f", "Maximum Time (in days)", value=365)),
             ),
             ui.markdown("""Select the parameters for plotting"""),
             ui.input_selectize("x1_f", "Parameter 1", ['c1','c2','log(mu1)','log(mu2)','log(nu1)', 'log(nu2)','sigma','turnover','Gamma','Delta'], selected = 'c1'),
@@ -94,12 +157,41 @@ app_ui = ui.page_fluid(
     ui.nav("Adaptation to Novel Host - Antia et al. (2003)",
       ui.p(
                 """
+                
+                This model describes how the probability that a pathogen
+                that is introduced in a novel host (e.g., humans) but is
+                mal-adapted (i.e., has basic reproductive number <1 in that host)
+                can evolve to successfully sustain transmission. The pathogen
+                must acquire m mutations to successfully emerge.
+                There is, however, the possibility the pathogen goes stochastically
+                extinct before it can adapt.
+                This model is then a description of how the extent of
+                mutational opportunities shapes the likelihood of rescue/emergence.
+                
+                The fitnesses (reproductive values) 
+                for intermediate strains are determined based on the 
+                mode of adaptation (jackpot, additive, fitness valley).
+                Under the additive model, intermediate fitnesses are in-between
+                the fitnesses of the first and mth strains, and each mutation adds
+                to the fitness of the previous strain. Mutation occurs with probability mu,
+                so that in the full branching process simulations the number of
+                infections of type i from an individual infected with type i is
+                Poisson with parameter (1-mu)*R0 and the number of new infections
+                of type i+1 from an individual infected with type i is Poisson with
+                parameter mu*R0. 
+                Back mutations are assumed to be rare and are thus ignored.
+
                 """
             ),
       ui.navset_tab_card(
       ui.nav('Emergence probability as function of initial degree of maladapation (R0)',
       ui.p(
                 """
+                A well-known formula for the probability of extinction of a 
+                branching process is used to compute the 
+                probability the pathogen emerges (=1-P(extinction)).
+                Here, the emergence probability is plotted as a function of
+                the degree to which the initial genotype (strain 1) is maladapted.
                 """
             ),
       ui.layout_sidebar(
@@ -129,6 +221,8 @@ app_ui = ui.page_fluid(
       ui.nav('Emergence probability as a function of R0 and mutation rate (mu)',
         ui.p(
                 """
+                The probability of emergence (i.e., of non-extinction) is plotted here
+                as a function of the initial R0 and mutation rate.
                 """
             ),
          ui.layout_sidebar(
@@ -158,6 +252,26 @@ app_ui = ui.page_fluid(
       ui.nav('Full simulation: branching process',
         ui.p(
                 """
+                
+                Here users can simulate realizations of the branching
+                process model of Antia et al. (2003), upon specifying
+                1) the initial number of individuals (i.e., pathogen 
+                population size in the novel host upon spillover),
+                2) mutation rate, 3) fitness landscape,
+                4) initial degree of mal-adaptation, 5) number of generations,
+                and 5) number of realizations. Combinations of the mutation
+                rate and initial degree of maladaptation can be specified.
+                The following quantities are plotted: (1) the 
+                number of individuals infected with each strain
+                at each generation. (2) The distribution of extinction times.
+                (3) The distribution of times to the PRODUCTION of an 
+                emergent-capabale strain. To reduce crowding when 
+                >1 simulation is run, the plot of the number of 
+                individuals infected with each
+                strain only shows the dynamics for strain m (i.e., the
+                genotype that has acquired mutations and is emergent-capable).
+
+                
                 """
             ),
          ui.layout_sidebar(
@@ -167,8 +281,8 @@ app_ui = ui.page_fluid(
             ui.column(5, ui.input_numeric("m_bp", "Number of Types", value=2)),
             ),
             ui.row(
-            ui.column(5, ui.input_numeric("nindv_bp", "Number of Individuals",value = 10)),
-            ui.column(5, ui.input_selectize("nsim_bp", "Number of Simulations",[1, 100,1000], selected=1)),
+            ui.column(5, ui.input_numeric("nindv_bp", "Number of Individuals",value = 1)),
+            ui.column(5, ui.input_selectize("nsim_bp", "Number of Simulations",[1, 100,1000,5000], selected=1)),
             ui.column(5, ui.input_numeric("ngen_bp", "Number of Generations", value=100)),
             ),
             ui.markdown("""Select the R0 mode"""),
@@ -387,11 +501,7 @@ def server(input, output, session):
       for idx, (outer_key, inner_dict) in enumerate(all_results.items()):
         for inner_key, values in inner_dict.items():
           if isinstance(inner_key, int):
-            print(values)
-            print(len(values))
-            mask=~np.isnan(values)
-            maskedValues=values[mask]
-            axs.flat[idx].plot(maskedValues, label=f'Type {inner_key+1}')
+            axs.flat[idx].plot(values, label=f'Type {inner_key+1}')
             axs.flat[idx].set_title(f'$\mu$={outer_key[0]}, $R_0$={outer_key[1]}')
             axs.flat[idx].legend(loc = 'upper right')
           elif inner_key == 'type_m':
@@ -403,10 +513,10 @@ def server(input, output, session):
               axs.flat[idx].plot(v, alpha = al)
             axs.flat[idx].set_title(f'$\mu$={outer_key[0]}, $R_0$={outer_key[1]}')
           elif inner_key == 'T_to_E':
-            axs.flat[(len(mu_list)*len(wild_r0_list))+(idx)].hist(values, bins = 20)
+            axs.flat[(len(mu_list)*len(wild_r0_list))+(idx)].hist(values)
             axs.flat[(len(mu_list)*len(wild_r0_list))+(idx)].set_title(f'$\mu$={outer_key[0]}, $R_0$={outer_key[1]}')
           elif inner_key == 'Extinct':
-            axs.flat[(len(mu_list)*len(wild_r0_list))*2+(idx)].hist(values, bins = 20)
+            axs.flat[(len(mu_list)*len(wild_r0_list))*2+(idx)].hist(values)
             axs.flat[(len(mu_list)*len(wild_r0_list))*2+(idx)].set_title(f'$\mu$={outer_key[0]}, $R_0$={outer_key[1]}')
       # fig.tight_layout()
       grid = plt.GridSpec(rows, cols)
