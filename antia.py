@@ -42,7 +42,7 @@ def calculate_emergence_prob(m,wild_type_r0, evolved_r0,mu, mode = 'Jackpot',val
 	all_r0 = generate_r0(m,wild_type_r0, evolved_r0, mode, valley_depth)
 	initial_guess = [0.1 for i in range(m)]
 	result = fsolve(equations, initial_guess, args=(mu, all_r0))
-	print(all_r0, result)
+	# print(all_r0, result)
 	return (1 - result[0])
 
 def simulate(m,mu, wild_type_r0, evolved_r0,mode, nindv,ngen, nsim):
@@ -51,7 +51,7 @@ def simulate(m,mu, wild_type_r0, evolved_r0,mode, nindv,ngen, nsim):
 	if nsim == 1:
 		for i in range(len(r0_list)):
 			all_sim_results[i] = [0 for _ in range(ngen)]
-		all_sim_results[0][0] = 0 
+		all_sim_results[0][0] = 0
 	else: ## collect the number of type m in each generation by simulation
 		all_sim_results['type_m'] = [] 
 	all_sim_results['T_to_E'] = []
@@ -71,27 +71,25 @@ def simulate(m,mu, wild_type_r0, evolved_r0,mode, nindv,ngen, nsim):
 			if total_pop >= 10000:
 				for j_ in range(j, ngen): ### test ####
 					for i_ in range(len(r0_list)):
-						sim_dict[i_][j_] = total_pop
+						sim_dict[i_][j_] = np.nan
 				break
 			else:
 				for i in range(len(r0_list)): ## for each type i
-					if sim_dict[i][j] != 0: ## if this generation has individuals with type j 
-						total_pop = sim_dict[i][j]
+					if sim_dict[i][j] != 0 and np.isnan(sim_dict[i][j]) == False: ## if this generation has individuals with type j 
+						total_pop += sim_dict[i][j]
 						if total_pop >= 10000: 
 							for i_ in range(i, len(r0_list)): ### test ####
-								for j_ in range(j, ngen-1):
-									sim_dict[i_][j_] = total_pop
+								for j_ in range(j, ngen):
+									sim_dict[i_][j_] = np.nan
 							break 
 						else:
 							for m in range(sim_dict[i][j]): # for each individual with type i at generation j 
 								if i != len(r0_list)-1:
 									same_i_inf = np.random.poisson((1-mu)*r0_list[i])
 									next_i_inf = np.random.poisson(mu*r0_list[i])
-									# print(i,j,same_i_inf, next_i_inf)
 									sim_dict[i][j+1] += same_i_inf
 									sim_dict[i+1][j+1] += next_i_inf
-									# print(sim_dict)
-									if i+1 == len(r0_list) - 1 and sim_dict[i+1][j+1] >0:
+									if i+1 == len(r0_list) - 1 and sim_dict[i+1][j+1] >0 and time_to_emerge == -1:
 										time_to_emerge = j+1 
 										emerge_flag = 1
 								else:
