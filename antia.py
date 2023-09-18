@@ -69,12 +69,18 @@ def simulate(m,mu, wild_type_r0, evolved_r0,mode, nindv,ngen, nsim):
 		total_pop = nindv
 		for j in range(ngen-1): ## for each generation
 			if total_pop >= 10000:
+				for j_ in range(j, ngen): ### test ####
+					for i_ in range(len(r0_list)):
+						sim_dict[i_][j_] = total_pop
 				break
 			else:
 				for i in range(len(r0_list)): ## for each type i
 					if sim_dict[i][j] != 0: ## if this generation has individuals with type j 
 						total_pop = sim_dict[i][j]
-						if total_pop >= 10000:
+						if total_pop >= 10000: 
+							for i_ in range(i, len(r0_list)): ### test ####
+								for j_ in range(j, ngen-1):
+									sim_dict[i_][j_] = total_pop
 							break 
 						else:
 							for m in range(sim_dict[i][j]): # for each individual with type i at generation j 
